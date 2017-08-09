@@ -1,0 +1,21 @@
+pip3 install alembic
+
+# 初始化alembic
+alembic init alembic
+
+修改alembic.ini文件中的sqlalchemy.url为sqlite:////Users/wzy/Documents/PycharmProjects/microblog/app/microblog.db
+
+修改alembic/env.py文件，找到target_metadata那一句前面添加如下语句，并修改target_metadata定义：
+import os.path
+import sys
+sys.path.append(os.path.realpath('.'))
+from app.models import models
+
+target_metadata = models.Base.metadata
+
+自动生产DB版本升级文件
+alembic revision --autogenerate -m 'added one column to users table'
+
+执行DB版本升级
+alembic upgrade head
+
