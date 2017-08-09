@@ -14,7 +14,6 @@ def index():
 def hello():
     return 'Hello World!'
 
-
 @app.route('/html')
 def html():
     user = {'nickname': 'Miguel'}  # fake user
@@ -41,12 +40,18 @@ def posts():
     template_naeme = 'posts.html'
     return render_template(template_naeme, title='Posts', posts=posts, user=user)
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login')
 def login():
     form = LoginForm()
-    if form.validate_on_submit():
-        flash('Login requested for OpenID="' + form.openid.data + '", remember_me=' + str(form.remember_me.data))
-        return redirect('/')
-
     template_naeme = 'login.html'
     return render_template(template_naeme, title='Sign In', form=form)
+
+@app.route('/dologin', methods=['GET', 'POST'])
+def dologin():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash('username="' + form.username.data + '", password=' + str(form.password.data))
+        return redirect('/')
+    else:
+        template_naeme = 'login.html'
+        return render_template(template_naeme, title='Sign In', form=form)

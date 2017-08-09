@@ -1,7 +1,7 @@
 flask
 Flask-WTF
 flask-login
-flask-openid
+Flask-OAuthlib
 flask-mail
 flask-sqlalchemy
 alembic
