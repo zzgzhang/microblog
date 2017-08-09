@@ -3,7 +3,7 @@ Flask-WTF
 flask-login
 Flask-OAuthlib
 flask-mail
-flask-sqlalchemy
+sqlalchemy
 alembic
 flask-whooshalchemy
 flask-babel
