@@ -2,13 +2,17 @@ from app import app
 from flask import render_template
 from flask import flash
 from flask import redirect
-from app.views.forms import LoginForm
+from flask_login import login_required, current_user
 
 @app.route('/')
+@login_required
 def index():
-    user = {'nickname': 'Miguel'}  # fake user
+    '''
+    user = current_user
     template_naeme = 'index.html'
     return render_template(template_naeme, title='Home', user=user)
+    '''
+    return redirect('/posts')
 
 @app.route('/hello')
 def hello():
@@ -29,9 +33,10 @@ def html():
     '''
 
 @app.route('/posts')
+@login_required
 def posts():
     # fake user
-    user = {'nickname': 'Miguel'}
+    user = current_user
 
     # fake array of posts
     posts = [{'author': {'nickname': 'John'}, 'body': 'Beautiful day in Portland!'},
@@ -40,18 +45,3 @@ def posts():
     template_naeme = 'posts.html'
     return render_template(template_naeme, title='Posts', posts=posts, user=user)
 
-@app.route('/login')
-def login():
-    form = LoginForm()
-    template_naeme = 'login.html'
-    return render_template(template_naeme, title='Sign In', form=form)
-
-@app.route('/dologin', methods=['GET', 'POST'])
-def dologin():
-    form = LoginForm()
-    if form.validate_on_submit():
-        flash('username="' + form.username.data + '", password=' + str(form.password.data))
-        return redirect('/')
-    else:
-        template_naeme = 'login.html'
-        return render_template(template_naeme, title='Sign In', form=form)

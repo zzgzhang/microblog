@@ -3,7 +3,7 @@
 
 {% block content %}
     <h1>Sign In</h1>
-    <form action="dologin" method="post" name="login">
+    <form action="login" method="post" name="login">
         {{ form.csrf_token }}
         <p>
             {% for error in form.username.errors %}

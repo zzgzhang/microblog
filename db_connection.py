@@ -1,7 +1,5 @@
 from app.models.models import Users
-from app.models import DBSession
-
-session = DBSession()
+from app.models import session
 
 # 增加数据
 user = Users()

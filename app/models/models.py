@@ -15,6 +15,18 @@ class Users(Base):
     email = sa.Column(sa.String(120), nullable=False)
     description = sa.Column(sa.String(500), nullable=False)
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
     def __repr__(self):
         return 'username:%s, password:%s' % (self.username, self.password)
 
