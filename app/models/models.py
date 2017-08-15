@@ -13,7 +13,10 @@ class Users(Base):
     password = sa.Column(sa.String(20), nullable=False)
     nickname = sa.Column(sa.String(64), nullable=False)
     email = sa.Column(sa.String(120), nullable=False)
-    description = sa.Column(sa.String(500), nullable=False)
+    description = sa.Column(sa.String(500), nullable=False, server_default=' ', default=' ')
+    # server_default在数据库中设置字段的默认值，default是设置sqlalchemy提交是的默认值
+    imgpath = sa.Column(sa.String(30), nullable=False, server_default='default.jpg', default='default.jpg')
+    last_seen = sa.Column(sa.DateTime())
 
     def is_authenticated(self):
         return True
@@ -29,6 +32,10 @@ class Users(Base):
 
     def __repr__(self):
         return 'username:%s, password:%s' % (self.username, self.password)
+
+    def get_imgpath(self):
+        img_path = '../static/resources/' + self.imgpath
+        return img_path
 
 class Posts(Base):
     __tablename__ = 'posts'
