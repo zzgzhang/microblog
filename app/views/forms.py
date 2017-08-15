@@ -3,10 +3,16 @@ from wtforms import StringField, PasswordField, FileField, TextAreaField
 from wtforms.validators import DataRequired, Length
 
 class LoginForm(Form):
-    username = StringField(label='Username', validators=[DataRequired()])
-    password = PasswordField(label='Password', validators=[DataRequired()])
+    username = StringField(label='Username', validators=[DataRequired(message='username is required.')])
+    password = PasswordField(label='Password', validators=[DataRequired(message='password is required.')])
 
 class EditForm(Form):
-    nickname = StringField(label='Nickname', validators=[DataRequired()])
+    nickname = StringField(label='Nickname', validators=[DataRequired(message='nickname is required.')])
     description = TextAreaField(label='About Me', validators=[Length(min=0, max=140)])
     image = FileField(label='Image')
+
+class NewUserForm(Form):
+    username = StringField(label='Username', validators=[DataRequired(message='username is required.')])
+    password = PasswordField(label='Password', validators=[DataRequired(message='password is required.')])
+    nickname = StringField(label='Nickname', validators=[DataRequired(message='nickname is required.')])
+    description = TextAreaField(label='About Me', validators=[Length(min=0, max=140)])

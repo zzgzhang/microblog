@@ -17,3 +17,15 @@ class UserController:
     def update(self, user):
         session.add(user)
         session.commit()
+
+    def add(self, username, password, nickname, description):
+        user = Users()
+        user.username = username
+        user.password = password
+        user.nickname = nickname
+        user.description = description
+        user.email = ''
+        user.imgpath = 'default.jpg'
+        session.add(user)
+        session.commit()
+        return user

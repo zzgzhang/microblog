@@ -7,9 +7,21 @@ from flask_login import login_required, current_user
 from app.controller.usercontroller import UserController
 from flask import url_for
 from datetime import datetime
-from app.views.forms import EditForm
+from app.views.forms import EditForm, NewUserForm
 from os.path import join
 from os import remove
+from app.models import session
+from flask_login import login_user
+
+@app.errorhandler(404)
+def internal_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    session.rollback()
+    return render_template('500.html'), 500
+
 
 @app.route('/')
 @login_required
@@ -105,6 +117,26 @@ def edit():
         form.nickname.data = current_user.nickname
         form.description.data = current_user.description
     return render_template('edit.html', title='Edit User', form=form)
+
+@app.route('/newuser', methods=['GET', 'POST'])
+def newuser():
+    form = NewUserForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        userController = UserController()
+        user = userController.query_byname(username)
+        if user:
+            flash('The username is signned up, please use another username!')
+            render_template('newuser.html', title='Sign Up', form=form)
+        else:
+            password = form.password.data
+            nickname = form.nickname.data
+            description = form.description.data
+            user = userController.add(username=username, password=password, nickname=nickname, description=description)
+            login_user(user)
+            return redirect(url_for('user', username=username))
+
+    return render_template('newuser.html', title='Sign Up', form=form)
 
 
 

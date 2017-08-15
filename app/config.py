@@ -11,3 +11,15 @@ SECRET_KEY = 'you-will-never-guess'
 
 # 文件上传目录
 UPLOAD_FOLDER = '/Users/wzy/Documents/PycharmProjects/microblog/app/static/resources'
+
+# mail server settings
+MAIL_SERVER = 'localhost'
+MAIL_PORT = 25
+MAIL_USERNAME = None
+MAIL_PASSWORD = None
+
+# administrator list
+ADMINS = ['you@example.com']
+
+# log文件
+LOG_FILE = 'app/tmp/microblog.log'
