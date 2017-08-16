@@ -26,6 +26,9 @@ class UserController:
         user.description = description
         user.email = ''
         user.imgpath = 'default.jpg'
+        # 关注自己
+        user.follow(user)
+        # 保存DB
         session.add(user)
         session.commit()
         return user

@@ -138,5 +138,42 @@ def newuser():
 
     return render_template('newuser.html', title='Sign Up', form=form)
 
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+    userController = UserController()
+    user = userController.query_byname(username)
+    if user is None:
+        flash('User %s not found.' % username)
+        return redirect(url_for('index'))
+    if user == current_user:
+        flash('You can\'t follow yourself!')
+        return redirect(url_for('user', username=username))
+    u = current_user.follow(user)
+    if u is None:
+        flash('Cannot follow ' + username + '.')
+        return redirect(url_for('user', username=username))
+    flash('You are now following ' + username + '!')
+    return redirect(url_for('user', username=username))
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+    userController = UserController()
+    user = userController.query_byname(username)
+    if user is None:
+        flash('User %s not found.' % username)
+        return redirect(url_for('index'))
+    if user == g.user:
+        flash('You can\'t unfollow yourself!')
+        return redirect(url_for('user', username=username))
+    u = current_user.unfollow(user)
+    if u is None:
+        flash('Cannot unfollow ' + username + '.')
+        return redirect(url_for('user', username=username))
+    flash('You have stopped following ' + username + '.')
+    return redirect(url_for('user', username=username))
+
+
 
 
