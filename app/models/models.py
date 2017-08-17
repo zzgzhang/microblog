@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from app.models import engine
 from sqlalchemy.orm import relationship, backref
 from app.models import session
+from app import app
 
 Base = declarative_base()
 
@@ -49,7 +50,7 @@ class Users(Base):
         return 'username:%s, password:%s' % (self.username, self.password)
 
     def get_imgpath(self):
-        img_path = '../static/resources/' + self.imgpath
+        img_path = '/static/resources/' + self.imgpath
         return img_path
 
     def follow(self, user):
@@ -65,9 +66,32 @@ class Users(Base):
     def is_following(self, user):
         return self.followed.filter(followers.c.followed_id == user.id).count() > 0
 
-    def followed_posts(self):
-        return session.query(Posts).join(followers, (followers.c.followed_id == Posts.user_id)).filter(
-            followers.c.follower_id == self.id).order_by(Posts.timestamp.desc())
+    def followed_posts(self, page=0):
+        limit = app.config['POSTS_PER_PAGE']
+        posts = self.__get_followed_posts(limit=limit, page=(page - 1))
+        has_next_page = False
+        tmp_posts = self.__get_followed_posts(limit=limit, page=(page))
+        if tmp_posts.count() > 0:
+            has_next_page = True
+        has_pre_page = False
+        tmp_posts = self.__get_followed_posts(limit=limit, page=(page - 2))
+        if tmp_posts.count() > 0 and page > 1:
+            has_pre_page = True
+
+        results = {
+            'posts' : posts,
+            'has_pre_page' : has_pre_page,
+            'pre_page_num' : page - 1,
+            'has_next_page' : has_next_page,
+            'next_page_num' : page + 1
+        }
+        return results
+
+    def __get_followed_posts(self, limit, page):
+        posts = session.query(Posts).join(followers, (followers.c.followed_id == Posts.user_id)).filter(
+            followers.c.follower_id == self.id).order_by(Posts.timestamp.desc()).limit(limit).offset(
+            limit * int(page))
+        return posts
 
 
 class Posts(Base):
@@ -75,7 +99,7 @@ class Posts(Base):
 
     id = sa.Column(sa.Integer, primary_key=True)
     body = sa.Column(sa.String(500), nullable=True)
-    timestamp = sa.Column(sa.Time(), nullable=True)
+    timestamp = sa.Column(sa.DateTime(), nullable=True)
     user_id = sa.Column(sa.Integer(), sa.ForeignKey('users.id'))
     author = relationship('Users')
 

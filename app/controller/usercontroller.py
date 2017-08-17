@@ -1,5 +1,6 @@
-from app.models.models import Users
+from app.models.models import Users, Posts
 from app.models import session
+from datetime import datetime
 
 class UserController:
     def query(self, username, password):
@@ -32,3 +33,12 @@ class UserController:
         session.add(user)
         session.commit()
         return user
+
+    def addpost(self, user_id, post_body):
+        post = Posts()
+        post.user_id = user_id
+        post.body = post_body
+        post.timestamp = datetime.utcnow()
+        session.add(post)
+        session.commit()
+        return post

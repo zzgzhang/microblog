@@ -7,15 +7,17 @@ from flask_login import login_required, current_user
 from app.controller.usercontroller import UserController
 from flask import url_for
 from datetime import datetime
-from app.views.forms import EditForm, NewUserForm
+from app.views.forms import EditForm, NewUserForm, PostForm
 from os.path import join
 from os import remove
 from app.models import session
 from flask_login import login_user
 
+
 @app.errorhandler(404)
 def internal_error(error):
     return render_template('404.html'), 404
+
 
 @app.errorhandler(500)
 def internal_error(error):
@@ -23,19 +25,39 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 
-@app.route('/')
+@app.route('/', methods=['get', 'post'])
+@app.route('/index', methods=['get', 'post'])
+@app.route('/index/<int:page>', methods=['get', 'post'])
 @login_required
-def index():
-    '''
+def index(page=1):
     user = current_user
-    template_naeme = 'index.html'
-    return render_template(template_naeme, title='Home', user=user)
-    '''
-    return redirect('/posts')
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post_body = form.post.data
+        user_id = user.id
+        userController = UserController()
+        userController.addpost(user_id=user_id, post_body=post_body)
+        return redirect(url_for('index'))
+
+    # get posts
+    followed_posts_results = current_user.followed_posts(page=page)
+    posts = followed_posts_results['posts']
+    has_pre_page = followed_posts_results['has_pre_page']
+    pre_page_num = followed_posts_results['pre_page_num']
+    has_next_page = followed_posts_results['has_next_page']
+    next_page_num = followed_posts_results['next_page_num']
+
+    template_naeme = 'posts.html'
+    return render_template(template_naeme, title='Posts', posts=posts, user=user, form=form,
+                           has_next_page=has_next_page, next_page_num=next_page_num, has_pre_page=has_pre_page,
+                           pre_page_num=pre_page_num)
+
 
 @app.route('/hello')
 def hello():
     return 'Hello World!'
+
 
 @app.route('/html')
 def html():
@@ -51,6 +73,7 @@ def html():
     </html>
     '''
 
+
 @app.route('/posts')
 @login_required
 def posts():
@@ -64,9 +87,11 @@ def posts():
     template_naeme = 'posts.html'
     return render_template(template_naeme, title='Posts', posts=posts, user=user)
 
+
 @app.route('/user/<username>')
+@app.route('/user/<username>/<int:page>')
 @login_required
-def user(username):
+def user(username, page=1):
     userController = UserController()
     user = userController.query_byname(username=username)
 
@@ -74,18 +99,27 @@ def user(username):
         flash('User ' + username + ' not found.')
         return redirect('/')
 
-    posts = [{ 'author': user, 'body': 'Test post #1' }, { 'author': user, 'body': 'Test post #2' }]
-    return render_template('user.html',
-        user = user,
-        posts = posts)
+    # get posts
+    followed_posts_results = current_user.followed_posts(page=page)
+    posts = followed_posts_results['posts']
+    has_pre_page = followed_posts_results['has_pre_page']
+    pre_page_num = followed_posts_results['pre_page_num']
+    has_next_page = followed_posts_results['has_next_page']
+    next_page_num = followed_posts_results['next_page_num']
+
+    template_naeme = 'user.html'
+    return render_template(template_naeme, posts=posts, user=user,
+                           has_next_page=has_next_page, next_page_num=next_page_num, has_pre_page=has_pre_page,
+                           pre_page_num=pre_page_num)
+
 
 @app.before_request
 def before_request():
-
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         userController = UserController()
         userController.update(current_user)
+
 
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
@@ -118,6 +152,7 @@ def edit():
         form.description.data = current_user.description
     return render_template('edit.html', title='Edit User', form=form)
 
+
 @app.route('/newuser', methods=['GET', 'POST'])
 def newuser():
     form = NewUserForm()
@@ -138,6 +173,7 @@ def newuser():
 
     return render_template('newuser.html', title='Sign Up', form=form)
 
+
 @app.route('/follow/<username>')
 @login_required
 def follow(username):
@@ -156,6 +192,7 @@ def follow(username):
     flash('You are now following ' + username + '!')
     return redirect(url_for('user', username=username))
 
+
 @app.route('/unfollow/<username>')
 @login_required
 def unfollow(username):
@@ -173,7 +210,3 @@ def unfollow(username):
         return redirect(url_for('user', username=username))
     flash('You have stopped following ' + username + '.')
     return redirect(url_for('user', username=username))
-
-
-
-

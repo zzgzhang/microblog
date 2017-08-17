@@ -1,6 +1,10 @@
-<tr>
-    <td><img src="{{ user.get_imgpath() }}" style="display: flex" width="50" height="50"></td>
-    <td><p>
-        {{ post.author.nickname }} says: <b>{{ post.body }}</b>
-    </p></td>
-</tr>
+<table>
+    {% for post in posts %}
+        <tr>
+            <td><img src="{{ user.get_imgpath() }}" style="display: flex" width="50" height="50"></td>
+            <td><p>
+                {{ post.author.nickname }} says: <b>{{ post.body }}</b>
+            </p></td>
+        </tr>
+    {% endfor %}
+</table>

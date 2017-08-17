@@ -23,3 +23,6 @@ ADMINS = ['you@example.com']
 
 # log文件
 LOG_FILE = 'app/tmp/microblog.log'
+
+# 每页显示条数
+POSTS_PER_PAGE = 3
