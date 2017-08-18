@@ -1,13 +1,15 @@
 from app import app
 from flask import render_template
 from flask import flash
+from flask import g
 from flask import redirect
 from werkzeug.utils import secure_filename
 from flask_login import login_required, current_user
 from app.controller.usercontroller import UserController
+from app.controller.full_text_search import query as search_by_text
 from flask import url_for
 from datetime import datetime
-from app.views.forms import EditForm, NewUserForm, PostForm
+from app.views.forms import EditForm, NewUserForm, PostForm, SearchForm
 from os.path import join
 from os import remove
 from app.models import session
@@ -36,8 +38,9 @@ def index(page=1):
     if form.validate_on_submit():
         post_body = form.post.data
         user_id = user.id
+        nickname = user.nickname
         userController = UserController()
-        userController.addpost(user_id=user_id, post_body=post_body)
+        userController.addpost(user_id=user_id, nickname=nickname, post_body=post_body)
         return redirect(url_for('index'))
 
     # get posts
@@ -119,7 +122,32 @@ def before_request():
         current_user.last_seen = datetime.utcnow()
         userController = UserController()
         userController.update(current_user)
+        g.search_form = SearchForm()
 
+@app.route('/search', methods=['POST'])
+@login_required
+def search():
+    form = SearchForm()
+    if form.validate_on_submit():
+        return redirect(url_for('search_results', query=form.search.data))
+    else :
+        return redirect(url_for('index'))
+
+@app.route('/search_results/<query>')
+@login_required
+def search_results(query):
+    results = search_by_text(query)
+    post_ids = []
+    for item in results:
+        post_ids.append(item['post_id'])
+
+    if len(post_ids) == 0:
+        return redirect(url_for('index'))
+    else :
+        userController = UserController()
+        posts = userController.search_posts(post_ids=post_ids)
+        template_name = 'search_results.html'
+        return render_template(template_name, title='Search Results', posts=posts, query=query)
 
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required

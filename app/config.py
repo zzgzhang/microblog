@@ -3,14 +3,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 # 数据库链接设置
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'microblog.db')
-SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 CSRF_ENABLED = True
 # SECRET_KEY设置当CSRF启用时有效，这将生成一个加密的token供表单验证使用，你要确保这个KEY足够复杂不会被简单推测。
 SECRET_KEY = 'you-will-never-guess'
 
 # 文件上传目录
-UPLOAD_FOLDER = '/Users/wzy/Documents/PycharmProjects/microblog/app/static/resources'
+UPLOAD_FOLDER = os.path.join(basedir, 'static/resources')
 
 # mail server settings
 MAIL_SERVER = 'localhost'
@@ -22,7 +21,12 @@ MAIL_PASSWORD = None
 ADMINS = ['you@example.com']
 
 # log文件
-LOG_FILE = 'app/tmp/microblog.log'
+LOG_FILE = os.path.join(basedir, 'tmp/microblog.log')
 
 # 每页显示条数
 POSTS_PER_PAGE = 3
+
+# 全文检索
+WHOOSH_BASE = os.path.join(basedir, 'search.db')
+MAX_SEARCH_RESULTS = 10
+

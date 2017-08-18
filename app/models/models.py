@@ -27,7 +27,7 @@ class Users(Base):
     last_seen = sa.Column(sa.DateTime())
 
     followed = relationship('Users',
-                            secondary=followers,
+                            secondary='followers',
                             primaryjoin=(followers.c.follower_id == id),
                             secondaryjoin=(followers.c.followed_id == id),
                             backref=backref('followers', lazy='dynamic'),
@@ -101,7 +101,7 @@ class Posts(Base):
     body = sa.Column(sa.String(500), nullable=True)
     timestamp = sa.Column(sa.DateTime(), nullable=True)
     user_id = sa.Column(sa.Integer(), sa.ForeignKey('users.id'))
-    author = relationship('Users')
+    author = relationship(Users)
 
     def __repr__(self):
         return '%s' % self.body

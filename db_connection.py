@@ -1,4 +1,4 @@
-from app.models.models import Users
+from app.models.models import Users, Posts
 from app.models import session
 
 # 增加数据
@@ -16,7 +16,7 @@ user.nickname = 'Kevin'
 user.email = 'zzz@cn.ibm.com'
 user.description = 'This is a test user'
 session.commit()
-session.close()'''
+session.close()
 
 # 查询Users中的全部数据，返回的是一个List对象
 users = session.query(Users).all()
@@ -39,7 +39,7 @@ session.close()
 users_f = session.query(Users).filter_by(username='wzy').all()
 print((users_f))
 
-'''# 删除数据
+# 删除数据
 user = session.query(Users).get(2)
 print(user)
 session.delete(user)
@@ -47,4 +47,12 @@ session.commit()
 session.close()
 users = session.query(Users).all()
 print(users)'''
+
+# 删除全部Posts
+posts = session.query(Posts).all()
+for post in posts:
+    session.delete(post)
+    session.commit()
+    session.close()
+
 

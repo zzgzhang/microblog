@@ -10,8 +10,13 @@
 <div>
     Microblog: <a href="/">Home</a>
     {% if current_user.is_authenticated %}
-        <a href="{{ url_for('user', username = current_user.username) }}">Your Profile</a>
-        <a href="/auth/logout">Logout</a>
+         | <a href="{{ url_for('user', username = current_user.username) }}">Your Profile</a>
+        |
+        <form style="display: inline;" action="{{ url_for('search') }}" method="post" name="search">
+            {{ g.search_form.csrf_token }}{{ g.search_form.search(size=20) }}<input type="submit" value="Search">
+        </form>
+
+         | <a href="/auth/logout">Logout</a>
     {% endif %}
     {% if not current_user.is_authenticated %}
         <a href="{{ url_for('newuser') }}">Sign Up</a>

@@ -1,6 +1,7 @@
 from app.models.models import Users, Posts
 from app.models import session
 from datetime import datetime
+from app.controller.full_text_search import create_index
 
 class UserController:
     def query(self, username, password):
@@ -27,18 +28,29 @@ class UserController:
         user.description = description
         user.email = ''
         user.imgpath = 'default.jpg'
+
+        # 保存DB
+        session.add(user)
+        session.commit()
         # 关注自己
         user.follow(user)
-        # 保存DB
         session.add(user)
         session.commit()
         return user
 
-    def addpost(self, user_id, post_body):
+    # 增加Post
+    def addpost(self, user_id, nickname, post_body):
         post = Posts()
         post.user_id = user_id
         post.body = post_body
         post.timestamp = datetime.utcnow()
         session.add(post)
         session.commit()
+        # 建立全文检索索引
+        create_index(user_id=user_id, post_id=post.id, nickname=nickname, post_body=post_body)
         return post
+
+    # Post检索
+    def search_posts(self, post_ids):
+        posts = session.query(Posts).filter(Posts.id.in_(other=post_ids)).order_by(Posts.timestamp.desc()).all()
+        return posts

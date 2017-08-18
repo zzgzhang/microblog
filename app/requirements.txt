@@ -5,7 +5,7 @@ Flask-OAuthlib
 flask-mail
 sqlalchemy
 alembic
-flask-whooshalchemy
+whoosh
 flask-babel
 guess_language
 flipflop
