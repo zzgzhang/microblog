@@ -4,6 +4,7 @@ from flask_login import LoginManager
 import logging
 from logging.handlers import SMTPHandler
 from logging.handlers import RotatingFileHandler
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -12,6 +13,7 @@ lm = LoginManager()
 lm.session_protection = 'strong'
 lm.login_view = 'auth.login'
 lm.init_app(app)
+mail = Mail(app)
 
 from app.views import microblogviews
 from app.views import authviews

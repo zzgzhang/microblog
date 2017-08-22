@@ -11,14 +11,17 @@ SECRET_KEY = 'you-will-never-guess'
 # 文件上传目录
 UPLOAD_FOLDER = os.path.join(basedir, 'static/resources')
 
-# mail server settings
-MAIL_SERVER = 'localhost'
-MAIL_PORT = 25
-MAIL_USERNAME = None
-MAIL_PASSWORD = None
+# email server
+MAIL_SERVER = 'smtp.qq.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = 'your name'
+MAIL_PASSWORD ='your password'
 
 # administrator list
-ADMINS = ['you@example.com']
+ADMINS = ['yourid@qq.com']
+
 
 # log文件
 LOG_FILE = os.path.join(basedir, 'tmp/microblog.log')

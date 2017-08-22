@@ -14,6 +14,7 @@ from os.path import join
 from os import remove
 from app.models import session
 from flask_login import login_user
+from app.controller.emails import follower_notification
 
 
 @app.errorhandler(404)
@@ -218,6 +219,8 @@ def follow(username):
         flash('Cannot follow ' + username + '.')
         return redirect(url_for('user', username=username))
     flash('You are now following ' + username + '!')
+    follower_notification(user, current_user)
+
     return redirect(url_for('user', username=username))
 
 
@@ -229,7 +232,7 @@ def unfollow(username):
     if user is None:
         flash('User %s not found.' % username)
         return redirect(url_for('index'))
-    if user == g.user:
+    if user == current_user:
         flash('You can\'t unfollow yourself!')
         return redirect(url_for('user', username=username))
     u = current_user.unfollow(user)
