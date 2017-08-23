@@ -5,6 +5,7 @@ import logging
 from logging.handlers import SMTPHandler
 from logging.handlers import RotatingFileHandler
 from flask_mail import Mail
+from app.utils.momentjs import Momentjs
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -14,6 +15,9 @@ lm.session_protection = 'strong'
 lm.login_view = 'auth.login'
 lm.init_app(app)
 mail = Mail(app)
+
+# 使用MomentJs
+app.jinja_env.globals['momentjs'] = Momentjs
 
 from app.views import microblogviews
 from app.views import authviews
