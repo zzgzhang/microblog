@@ -4,35 +4,39 @@
 {% block content %}
     <h1>Hi, {{ user.nickname }}!</h1>
     <form action="" method="post" name="post">
-        {{ form.csrf_token }}
-        <table>
-            <tr>
-                <td>Say something:</td>
-                <td>{{ form.post() }}</td>
-                <td>
-                    {% for error in form.errors.post %}
-                        <span style="color: red;">[{{ error }}]</span><br>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td><input type="submit" value="Post!"></td>
-                <td></td>
-            </tr>
-        </table>
+        <fieldset>
+            {{ form.csrf_token }}
+            <table class="table">
+                <tr>
+                    <td><label>Say something:</label></td>
+                    <td>{{ form.post() }}</td>
+                    <td>
+                        {% for error in form.errors.post %}
+                            <span style="color: red;">[{{ error }}]</span><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Post!" class="btn"></td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
     </form>
 
     {% if posts %}
         {% include 'post_tmp.html' %}
         {% if has_pre_page %}
-            <a href="{{ url_for('index', page = pre_page_num) }}"><< Newer posts</a>
+            <a href="{{ url_for('index', page = pre_page_num) }}" class="icon-chevron-left"></a>
         {% else %}
-            << Newer posts
-        {% endif %} |
+            <a href="#" class="icon-chevron-left">
+        {% endif %}
+        |
         {% if has_next_page %}
-            <a href="{{ url_for('index', page = next_page_num) }}">Older posts >></a>
-        {% else %}Older posts>>
+            <a href="{{ url_for('index', page = next_page_num) }}" class="icon-chevron-right"></a>
+        {% else %}
+            <a href="#" class="icon-chevron-right">
         {% endif %}
     {% endif %}
 
