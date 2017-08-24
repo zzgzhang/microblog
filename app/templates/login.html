@@ -4,21 +4,22 @@
 {% block content %}
     <h1>Sign In</h1>
     <form action="login" method="post" name="login">
-        {{ form.csrf_token }}
-        <p>
-            {% for error in form.username.errors %}
-                <span style="color: red;">[{{ error }}]</span><br>
-            {% endfor %}
-            {% for error in form.password.errors %}
-                <span style="color: red;">[{{ error }}]</span><br>
-            {% endfor %}
-            {{ form.username.label }}:
-            {{ form.username(size=80) }}<br>
-            {{ form.password.label }}:
-            {{ form.password(size=80) }}<br>
+        <fieldset>
+            {{ form.csrf_token }}
+            <p>
+                {% for error in form.username.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+                {% for error in form.password.errors %}
+                    <span style="color: red;">[{{ error }}]</span><br>
+                {% endfor %}
+                <label>{{ form.username.label }}</label>
+                {{ form.username(size=80) }}<br>
+                <label>{{ form.password.label }}</label>
+                {{ form.password(size=80) }}<br>
 
-        </p>
-        <p><input type="submit" value="Sign In"></p>
-
+            </p>
+            <p><input type="submit" value="Sign In"></p>
+        </fieldset>
     </form>
 {% endblock %}

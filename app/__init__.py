@@ -6,19 +6,23 @@ from logging.handlers import SMTPHandler
 from logging.handlers import RotatingFileHandler
 from flask_mail import Mail
 from app.utils.momentjs import Momentjs
+from flask_babel import Babel, lazy_gettext
 
 app = Flask(__name__)
 app.config.from_object(config)
 # 注册Login管理
 lm = LoginManager()
+lm.login_message = lazy_gettext('Please log in to access this page.')
 lm.session_protection = 'strong'
 lm.login_view = 'auth.login'
 lm.init_app(app)
 mail = Mail(app)
+babel = Babel(app)
 
 # 使用MomentJs
 app.jinja_env.globals['momentjs'] = Momentjs
 
+# 路由设定
 from app.views import microblogviews
 from app.views import authviews
 # 注册Blueprint模块

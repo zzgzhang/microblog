@@ -1,6 +1,7 @@
 from app import app
 from flask import render_template
 from flask import flash
+from flask import request
 from flask import g
 from flask import redirect
 from werkzeug.utils import secure_filename
@@ -15,7 +16,14 @@ from os import remove
 from app.models import session
 from flask_login import login_user
 from app.controller.emails import follower_notification
+from app import babel
+from flask_babel import gettext as _
 
+
+@babel.localeselector
+def get_locale():
+    return request.accept_languages.best_match(app.config['LANGUAGES'].keys())
+    #return 'zh'
 
 @app.errorhandler(404)
 def internal_error(error):
@@ -190,7 +198,7 @@ def newuser():
         userController = UserController()
         user = userController.query_byname(username)
         if user:
-            flash('The username is signned up, please use another username!')
+            flash(_('The username is signned up, please use another username!'))
             render_template('newuser.html', title='Sign Up', form=form)
         else:
             password = form.password.data

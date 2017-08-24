@@ -16,11 +16,11 @@ MAIL_SERVER = 'smtp.qq.com'
 MAIL_PORT = 465
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
-MAIL_USERNAME = 'your name'
-MAIL_PASSWORD ='your password'
+MAIL_USERNAME = 'youuserid'
+MAIL_PASSWORD ='yourpassword'
 
 # administrator list
-ADMINS = ['yourid@qq.com']
+ADMINS = ['1553291835@qq.com']
 
 
 # log文件
@@ -32,4 +32,11 @@ POSTS_PER_PAGE = 3
 # 全文检索
 WHOOSH_BASE = os.path.join(basedir, 'search.db')
 MAX_SEARCH_RESULTS = 10
+
+# 多语言配置
+LANGUAGES = {
+    'en' : 'English',
+    'zh' : '中文'
+}
+
 
